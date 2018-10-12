@@ -87,9 +87,11 @@ asdf = np.array((0.000313963,0.000346841,0.00057045,0.00102672,0.00105015,0.0013
 arraysize = 2048 * 128 *  4
 xaxis = np.array((1,2,4,8,16, 32, 64, 128, 256, 512, 1024))
 
-#asdf = np.array((0.000551359,0.00103171,0.00105536,0.00129003,0.0016892,0.00221098,0.003239090, .00324708,0.00345248))
-#arraysize = 2048 * 128 *  16
-#xaxis = np.array((1,2,4,8,16, 32, 64, 128, 256))
+"""
+asdf = np.array((0.000551359,0.00103171,0.00105536,0.00129003,0.0016892,0.00221098,0.003239090, .00324708,0.00345248))
+arraysize = 2048 * 128 *  16
+xaxis = np.array((1,2,4,8,16, 32, 64, 128, 256))
+"""
 
 asdf = np.divide(asdf, 10)
 
@@ -98,4 +100,5 @@ plt.scatter(xaxis,  np.divide(np.divide(arraysize, asdf), 1e9))
 
 plt.xlabel("Stride in Byte")
 plt.ylabel("Kopierrate in GB/s")
+plt.grid()
 plt.savefig('fig.svg', format='svg', bbox_inches='tight')

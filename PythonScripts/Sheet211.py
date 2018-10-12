@@ -24,9 +24,14 @@ results = np.divide(results, 10)
 resgbs= np.divide(np.power(2,30), results);
 
 resgbs= np.divide(resgbs, 1e9)
+""" #no more Datendurchsatz
 resgbs= resgbs*2
 
 yticks = np.arange(200, 207)
+"""
+
+yticks = np.arange(100, 104)
+
 sbpltNbmr = np.shape(results)[0]
 rubbish, sbplts = plt.subplots(sbpltNbmr)
 for plotNumber in range(0, sbpltNbmr):
@@ -34,14 +39,17 @@ for plotNumber in range(0, sbpltNbmr):
     
         
        if results[plotNumber, l, 0] <= 10e30: 
-            sbplts[plotNumber].plot(xaxis, resgbs[plotNumber,l,:], label = "L = " + str((2 ** l) * 16))
+            sbplts[plotNumber].plot(xaxis, resgbs[plotNumber,l,:], label =str((2 ** l) * 16) + " Threads")
             sbplts[plotNumber].scatter(xaxis, resgbs[plotNumber,l,:], s = 2)
             sbplts[plotNumber].set_yticks(yticks)
 #plt.axis.Tick
     sbplts[plotNumber].grid(which = 'major', alpha = 0.2)
     sbplts[plotNumber].legend(bbox_to_anchor=(1.05,1), loc = 2)
-    sbplts[plotNumber].set_title("Subgroup Size: " + str((2 ** plotNumber) * 8))
-plt.xlabel("used j: I = 2^j")
-plt.ylabel("Datendurchsatz in GB/s")
+    sbplts[plotNumber].set_title(str((2 ** plotNumber) * 8) + " Subgroups")
+    
+for ax in sbplts.flat:
+    ax.set(ylabel="Kopierrate in GB/s", xlabel="$\log_{10}$(Iterationen)")
+#plt.xlabel("used j: I = 2^j")
+#plt.ylabel("Datendurchsatz in GB/s")
 plt.savefig('fig.svg', format='svg', bbox_inches='tight')
 rcParams['figure.figsize'] = 5, 3

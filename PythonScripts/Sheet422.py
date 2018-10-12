@@ -40,6 +40,7 @@ results =  np.array((((3.86048,9.17094,32.8141,130.257,477.548),(3.3536,9.09312,
 
 
 #divide by 10 because we measured 10 times
+results /= 10
 
 sbpltNbmr = np.shape(bArray)[0]
 rubbish, sbplts = plt.subplots(2, 2, sharex='all', sharey='all') #(sbpltNbmr)
@@ -58,6 +59,8 @@ for i in range(sbpltNbmr):
             sbplts.flatten()[plotNumber].legend(bbox_to_anchor=(1.05,1), loc = 2)
        # sbplts[plotNumber].set_title("N =" + str((2 ** plotNumber) * 8))
        
-plt.xlabel("Ergebnisse pro Block")
-plt.ylabel("Zeit in MS")
+for ax in sbplts.flat:
+    ax.set(xlabel="Ergebnisse pro Block", ylabel="Zeit in ms")
+#plt.xlabel("Ergebnisse pro Block")
+#plt.ylabel("Zeit in MS")
 plt.savefig('fig.svg', format='svg', bbox_inches='tight')

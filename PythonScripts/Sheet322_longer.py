@@ -76,6 +76,9 @@ for i in range(sbpltNbmr):
     resgbs = np.divide((2 ** 29) * 4, resgbs.astype(float))        
     resgbs= np.divide(resgbs, 1e9)
     
+    #pseudo-korrektur: wurde hier mit 10 Schritten gemessen statt mit 5 (np.divide(resgbs, 5)), daher Ergebnisse halb so hoch wie sie sollten?
+    resgbs *= 2
+    
     for lines in range(np.shape(resultsh2dunified)[0]):
         """
         sbplts[plotNumber].plot(xaxis*(lines+1), resgbs[lines,:], label = "Anzahl Bloecke = " + str(lines + 1))

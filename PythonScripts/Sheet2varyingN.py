@@ -36,11 +36,11 @@ for plotNumber in range(0, 1):
     
         
        if results[N, 0] <= 10e30: 
-            sbplts.plot(xaxis, resgbs[N,:], label = "N = " + str((2 ** N) * 8))
+            sbplts.plot(xaxis, resgbs[N,:], label = str((2 ** N) * 8) +  " Subdomänen")
             sbplts.scatter(xaxis, resgbs[N,:])#, s = 2)
 #plt.axis.Tick
     sbplts.grid()
     sbplts.legend(bbox_to_anchor=(1.05,1), loc = 2)
-plt.xlabel("used j: I = 2^j")
-plt.ylabel("Kopierratez in GB/s")
+plt.xlabel("$\log_{10}$(Iterationen)")
+plt.ylabel("Kopierrate in GB/s")
 plt.savefig('fig.svg', format='svg', bbox_inches='tight')

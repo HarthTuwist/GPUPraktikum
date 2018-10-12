@@ -46,7 +46,10 @@ for plotNumber in range(0, sbpltNbmr):
     sbplts[plotNumber].grid()
     sbplts[plotNumber].legend(bbox_to_anchor=(1.05,1), loc = 2)
 
-plt.xlabel("sizeof(T)")
-plt.ylabel("Kopierrate in GB/s")
+for ax in sbplts.flat:
+    ax.set(ylabel="Kopierrate in GB/s", xlabel="sizeof(T) in Bytes")
+    
+#plt.xlabel("sizeof(T) in Bytes")
+#plt.ylabel("Kopierrate in GB/s")
 plt.savefig('fig.svg', format='svg', bbox_inches='tight')
 rcParams['figure.figsize'] = 5, 3

@@ -52,7 +52,9 @@ for i in range(sbpltNbmr):
         if plotNumber %2 == 1:
             sbplts.flatten()[plotNumber].legend(bbox_to_anchor=(1.05,1), loc = 2)
        # sbplts[plotNumber].set_title("N =" + str((2 ** plotNumber) * 8))
-       
-plt.xlabel("Ergebnisse pro Block")
-plt.ylabel("Zeit in MS")
+
+for ax in sbplts.flat:
+    ax.set(xlabel="Ergebnisse pro Block", ylabel="Zeit in ms")  
+#plt.xlabel("Ergebnisse pro Block")
+#plt.ylabel("Zeit in MS")
 plt.savefig('fig.svg', format='svg', bbox_inches='tight')

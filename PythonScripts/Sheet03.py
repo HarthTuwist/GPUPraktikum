@@ -12,12 +12,15 @@ xaxis = np.array([0,1,2,3,4,5,6])
 #yaxis = np.array([1.51553,8.9233e-05,0.000648203,0.0061845,0.0581663,0.578622,5.76415])
 yaxis = np.array([3.1724e-05,8.0355e-05,0.000623906,0.00599389,0.0571372,0.569171,5.69988])
 
+yaxis = yaxis * 10**6 #because µs
+
+
 expAry = np.power(10, xaxis)
 yaxis = np.divide(yaxis, expAry)
 
 plt.plot(xaxis, yaxis)
 plt.scatter(xaxis, yaxis)
-plt.xlabel("Iterationen in 10^x Schritten")
-plt.ylabel("Zeit in Sekunden pro Kernel_Start")
+plt.xlabel("$\log_{10}$(#Kernel-Launches)")
+plt.ylabel("$\Delta$ t / #Kernel-Launches in µs")
 plt.grid()
 plt.savefig('fig.svg', format='svg')
