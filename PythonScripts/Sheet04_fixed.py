@@ -55,6 +55,10 @@ plt.plot(xaxis, d2hgbs, color="g", label = "D2H")
 plt.plot(xaxis, h2hgbs, color="b", label = "H2H")
 plt.plot(xaxis, d2dgbs, color="c", label = "D2D")
 
+plt.plot(xaxis, np.full((np.shape(xaxis)[0],1), 8), color="brown", label = "PCIe")
+plt.plot(xaxis, np.full((np.shape(xaxis)[0],1), 128), color="black", label = "GPU Max")
+
+
 plt.scatter(xaxis, h2dgbs, color="r") 
 plt.scatter(xaxis, d2hgbs, color="g") 
 plt.scatter(xaxis, h2hgbs, color="b") 
@@ -64,6 +68,11 @@ plt.scatter(xaxis, d2dgbs, color="c")
 plt.xlabel("Groeße in MiBit")
 plt.ylabel("Kopierrate in GB/s")
 plt.yscale('log')
+
+#plt.yticks([h2dgbs[0], d2hgbs[0], h2hgbs[0], d2dgbs[0], 8, 128])
+#plt.axhline(128, color='black', lw=2)
+#plt.axhline(8, color='black', lw=2)
+
 plt.grid()
 plt.legend(bbox_to_anchor=(1.05,1), loc = 2)
 plt.savefig('fig.svg', format='svg', bbox_inches='tight')
