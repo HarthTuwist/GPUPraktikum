@@ -65,6 +65,6 @@ plt.scatter(xaxis, resgbs_L8[4,:])#, s = 2)
 
 plt.grid()
 plt.legend(bbox_to_anchor=(1.05,1), loc = 2)
-plt.xlabel("$\log_{10}$(Iterationen)")
+plt.xlabel("$\log_{2}$(Iterationen)")
 plt.ylabel("Kopierrate in GB/s")
 plt.savefig('fig.svg', format='svg', bbox_inches='tight')

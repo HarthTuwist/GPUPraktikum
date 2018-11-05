@@ -48,7 +48,7 @@ for plotNumber in range(0, sbpltNbmr):
     sbplts[plotNumber].set_title(str((2 ** plotNumber) * 8) + " Subdomains")
     
 for ax in sbplts.flat:
-    ax.set(ylabel="Kopierrate in GB/s", xlabel="$\log_{10}$(Iterationen)")
+    ax.set(ylabel="Kopierrate in GB/s", xlabel="$\log_{2}$(Iterationen)")
 #plt.xlabel("used j: I = 2^j")
 #plt.ylabel("Datendurchsatz in GB/s")
 plt.savefig('fig.svg', format='svg', bbox_inches='tight')

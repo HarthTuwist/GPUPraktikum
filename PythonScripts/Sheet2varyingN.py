@@ -47,6 +47,6 @@ for plotNumber in range(0, 1):
 #plt.axis.Tick
     sbplts.grid()
     sbplts.legend(bbox_to_anchor=(1.05,1), loc = 2)
-plt.xlabel("$\log_{10}$(Iterationen)")
+plt.xlabel("$\log_{2}$(Iterationen)")
 plt.ylabel("Kopierrate in GB/s")
 plt.savefig('fig.svg', format='svg', bbox_inches='tight')
