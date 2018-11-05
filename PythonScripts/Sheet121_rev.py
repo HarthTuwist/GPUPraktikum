@@ -118,7 +118,7 @@ for plotNumber in range(0, sbpltNbmr):
     sbplts[plotNumber].legend(bbox_to_anchor=(1.05,1), loc = 2)
 #plt.xlabel("sizeof(T) in Bytes")
 for ax in sbplts.flat:
-    ax.set(xlabel="Kopierrate in GB/s", ylabel="sizeof(T) in Bytes")
+    ax.set(ylabel="Kopierrate in GB/s", xlabel="sizeof(T) in Bytes")
     #sbplts[plotNumber].xlabel()
 #plt.ylabel()
 plt.viridis()
