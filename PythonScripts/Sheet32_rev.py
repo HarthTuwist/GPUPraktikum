@@ -56,5 +56,9 @@ for i in range(sbpltNbmr):
         
 plt.xlabel("Anzahl Threads")
 plt.ylabel("Datendurchsatz in GB/s")
+
+for ax in sbplts.flat:
+    ax.set(ylabel="Kopierrate in GB/s", xlabel="Anzahl Threads")
+    
 plt.savefig('fig.svg', format='svg', bbox_inches='tight')
 rcParams['figure.figsize'] = 5, 3

@@ -7,6 +7,7 @@ Created on Sun May 21 19:21:45 2017
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
 from matplotlib import rcParams
 rcParams.update({'figure.autolayout': True})
 rcParams['figure.figsize'] = 5, 5
@@ -33,6 +34,11 @@ resgbs= np.divide(resgbs, 1e9)
 
 #resgbs[np.where(resgbs < 5000)] = 223000
 #resgbs[np.where(resgbs > 5000)] = 0
+
+cmap = matplotlib.cm.get_cmap('viridis')
+curGraphNr = 0
+graphMaxNr = np.shape(resgbs)[1]
+
 maxLines = 6# max lines per subplot
 sbpltNbmr = (np.floor(np.shape(resgbs)[1] / maxLines) + 1).astype(int)
 rubbish, sbplts = plt.subplots(sbpltNbmr)
@@ -40,8 +46,9 @@ for plotNumber in range(0, sbpltNbmr):
     for i in range(0, maxLines):#(np.shape(resgbs)[1]):
         accessedGraph = i + maxLines * plotNumber
         if np.shape(resgbs)[1] > accessedGraph:
-            sbplts[plotNumber].plot(xaxis, resgbs[:, accessedGraph], label = "Iterationen: " + str(2 ** accessedGraph))
-            sbplts[plotNumber].scatter(xaxis, resgbs[:, accessedGraph])
+            sbplts[plotNumber].plot(xaxis, resgbs[:, accessedGraph], label = "Iterationen: " + str(2 ** accessedGraph), color = cmap((curGraphNr / graphMaxNr)))
+            sbplts[plotNumber].scatter(xaxis, resgbs[:, accessedGraph], color = cmap((curGraphNr / graphMaxNr)))
+            curGraphNr += 1
 #plt.axis.Tick
     sbplts[plotNumber].grid()
     sbplts[plotNumber].legend(bbox_to_anchor=(1.05,1), loc = 2)

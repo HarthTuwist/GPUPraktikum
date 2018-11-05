@@ -45,7 +45,7 @@ for plotNumber in range(0, sbpltNbmr):
 #plt.axis.Tick
     sbplts[plotNumber].grid(which = 'major', alpha = 0.2)
     sbplts[plotNumber].legend(bbox_to_anchor=(1.05,1), loc = 2)
-    sbplts[plotNumber].set_title(str((2 ** plotNumber) * 8) + " Subgroups")
+    sbplts[plotNumber].set_title(str((2 ** plotNumber) * 8) + " Subdomains")
     
 for ax in sbplts.flat:
     ax.set(ylabel="Kopierrate in GB/s", xlabel="$\log_{10}$(Iterationen)")

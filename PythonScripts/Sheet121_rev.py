@@ -7,6 +7,7 @@ Created on Sun May 21 19:21:45 2017
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
 from mpl_toolkits.mplot3d import Axes3D
 rcParams['figure.figsize'] = 5, 5
 
@@ -93,6 +94,14 @@ ax.set_zlabel('Speed in GB/s')
 
 plt.show()
 """
+
+
+#########Colors
+
+cmap = matplotlib.cm.get_cmap('viridis')
+curGraphNr = 0
+graphMaxNr = np.shape(resgbs)[1]
+
 xaxis = accessSize#np.tile(accessSize, (1,numBlocks.size)).flatten()
 maxLines = 6# max lines per subplot
 sbpltNbmr = (np.floor(np.shape(resgbs)[1] / maxLines) + 1).astype(int)
@@ -101,8 +110,9 @@ for plotNumber in range(0, sbpltNbmr):
     for i in range(0, maxLines):#(np.shape(resgbs)[1]):
         accessedGraph = i + maxLines * plotNumber
         if np.shape(resgbs)[1] > accessedGraph:
-            sbplts[plotNumber].plot(xaxis, resgbs[:, accessedGraph], label = "numBlocks = " + str(numBlocks[accessedGraph]))
-            sbplts[plotNumber].scatter(xaxis, resgbs[:, accessedGraph])
+            sbplts[plotNumber].plot(xaxis, resgbs[:, accessedGraph], label = "numBlocks = " + str(numBlocks[accessedGraph]), color = cmap((curGraphNr / graphMaxNr)))
+            sbplts[plotNumber].scatter(xaxis, resgbs[:, accessedGraph], color = cmap((curGraphNr / graphMaxNr)))
+            curGraphNr += 1
 #plt.axis.Tick
     sbplts[plotNumber].grid()
     sbplts[plotNumber].legend(bbox_to_anchor=(1.05,1), loc = 2)
@@ -110,7 +120,8 @@ for plotNumber in range(0, sbpltNbmr):
 for ax in sbplts.flat:
     ax.set(xlabel="Kopierrate in GB/s", ylabel="sizeof(T) in Bytes")
     #sbplts[plotNumber].xlabel()
-plt.ylabel()
+#plt.ylabel()
+plt.viridis()
 plt.savefig('fig.svg', format='svg', bbox_inches='tight')
 
 rcParams['figure.figsize'] = 5, 3
