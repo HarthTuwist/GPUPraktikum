@@ -45,8 +45,8 @@ for i in range(sbpltNbmr):
     
     for lines in range(0, np.shape(results)[0]):
     
-        sbplts.flatten()[plotNumber].plot(xaxis, results[lines, plotNumber, :], label = "Anzahl Threads = " + str(tArray[lines]))
-        sbplts.flatten()[plotNumber].scatter(xaxis, results[lines, plotNumber, :])
+        sbplts.flatten()[plotNumber].plot(xaxis, xaxis / results[lines, plotNumber, :], label = "Anzahl Threads = " + str(tArray[lines]))
+        sbplts.flatten()[plotNumber].scatter(xaxis,xaxis / results[lines, plotNumber, :])
             #plt.axis.Tick
         sbplts.flatten()[plotNumber].grid(linestyle='-')
         if plotNumber %2 == 1:
