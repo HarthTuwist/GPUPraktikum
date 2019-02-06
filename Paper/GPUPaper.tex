@@ -19,18 +19,18 @@
 \lstset{language=[11]C++}   
 
 \section{Einführung und Allgemeines}
-In diesem Praktikum sollten verschiedene parallele Zugriffsmuster auf Grafikarten gemessen und verglichen werden. Dabei verwendet wurde CUDA~\cite{CUDA}, eine von Nvidia entwickelte C++-Erweiterung, die Grafikkarten dieser Firma für parallelisierbare Berechnungen abseits von klassischem Rendering nutzbar macht. In diesem Fall verwendet wurde eine GTX~1070. Einige relevanten Spezifikationen dieser GPU sind:
+In diesem Praktikum sollten verschiedene parallele Zugriffsmuster auf Grafikkarten gemessen und verglichen werden. Dabei verwendet wurde CUDA~\cite{CUDA}, eine von Nvidia entwickelte C++--Erweiterung, die Grafikkarten dieser Firma für parallelisierbare Berechnungen abseits von klassischem Rendering nutzbar macht. Konkret durchgeführt wurden die Messungen auf einer GTX~1070. Einige relevante Spezifikationen dieser GPU sind:
 \begin{itemize}
-	\item 1920 Cores, wovon ein Warp jeweils 32~Threads umfasst~\cite{GPUSpecs}
+	\item Cores: 1920, wovon ein Warp jeweils 32~Threads umfasst~\cite{GPUSpecs}
 	\item Maximale Taktung laut "`nvidia-smi"': 1708 MHz~\cite{GPUSpecs}
 	\item Speicherkonfiguration: 8 GB GDDR5~RAM~\cite{GPUSpecs}
-	\item Herstellerangabe für den Durchsatz: 256~GB/s~\cite{GPUSpecs}
-	\item PCIe~3.0 fähig, in der Messung wurde allerdings nur PCIe 2.0x16 verwendet. Die maximale Kopierrate von PCIe 2.0x16 entspricht 8.0GB/s~\cite{PCIeSpecs}
+	\item Maximaler Durchsatz (Herstellerangabe): 256~GB/s~\cite{GPUSpecs}
+	\item PCI: PCIe~3.0 fähig, in der Messung wurde allerdings nur PCIe 2.0x16 verwendet. Die maximale Kopierrate von PCIe 2.0x16 entspricht 8.0GB/s~\cite{PCIeSpecs}
 \end{itemize}
 
 
-\subsection{Grundsätzliche Beobachtungen zur Kopierrate}
-Eine Grundlage der Programmierung mit der CUDA ist das Management der Daten, welche auf der CPU (genannt "`Host"') oder der GPU (genannt "`Client"') liegen, da CPU-Kerne nur bedingt auf den GPU-RAM zugreifen können und umgekehrt. Mithin ist die mit Standard-Kopieroperatoren erzielbare Kopierrate interessant, die gleichzeitigen einen guten Vergleichsmaßstab für die Effizienz der Verschiedenen Kernel darstellt. Abbildung~\ref{fig:Kopierrate} zeigt die für \texttt{cudaMemcpy()} gemessenen Kopierraten und die vom Hersteller angegebenen Maximalwerte sowie die Spezifikation für den verwendeten PCIe.
+\section{Grundsätzliche Beobachtungen}
+Eine Grundlage der Programmierung mit der CUDA ist das Management der Daten, welche auf der CPU (genannt "`Host"') oder der GPU (genannt "`Client"') liegen, da CPU-Kerne nur bedingt auf den GPU-RAM zugreifen können und umgekehrt. Mithin ist die mit Standard-Kopieroperatoren erzielbare Kopierrate interessant, die gleichzeitigen auch einen guten Vergleichsmaßstab für die Effizienz der verschiedenen Kernel darstellt. Abbildung~\ref{fig:Kopierrate} zeigt die für \texttt{cudaMemcpy()} gemessenen Kopierraten und die vom Hersteller angegebenen Maximalwerte sowie die Spezifikation für den verwendeten PCIe.
 
 \begin{figure} [htbp]
  	\centering
@@ -39,7 +39,7 @@ Eine Grundlage der Programmierung mit der CUDA ist das Management der Daten, wel
  	\label{fig:Kopierrate}
 \end{figure}
 
-Bei der tatsächlichen Durchführungen der Messungen ist es außerdem wichtig, zu beachten, dass jeweils der erste Kernel Aufruf eines CUDA Programms eine wesentlich längere Zeit benötigt als darauf folgende Aufrufe des selben Kernels. Abbildung~\ref{fig:StartupCost} zeigt eine Beispielmessung für einen Empty Kernel, dh. einen Kernel, der zwar aufgerufen wird, dann auf der GPU allerdings keine Arbeit verrichtet. Um dieser Verzerrung entgegenzuwirken, muss vor jeder Laufzeitmessung für einen Kernel dieser einmal als "`Warmup"' aufgerufen, aber dann aus der eigentlichen Messung herausgerechnet werden.
+Bei der tatsächlichen Durchführungen der Messungen muss beachtet werden, dass jeweils der erste Kernel Aufruf eines CUDA Programms eine wesentlich längere Zeit benötigt als darauf folgende Aufrufe des selben Kernels. Abbildung~\ref{fig:StartupCost} zeigt eine Beispielmessung für einen Empty Kernel, der zwar auf der GPU ausgeüfhrt wird, dort allerdings keine Arbeit verrichtet. Um dieser Verzerrung entgegenzuwirken, muss vor jeder Laufzeitmessung für einen Kernel dieser einmal als "`Warmup"' aufgerufen, aber dann aus der eigentlichen Messung herausgerechnet werden.
 
 \begin{figure} [htbp]
  	\centering
@@ -62,25 +62,25 @@ void copyKernel(T* out, T* in) {
 }
 \end{lstlisting}
 
-Obwohl die Funktion als Input nur Zeiger auf ein Quell-und ein Ziel-Buffer nimmt, gibt es doch drei implizite Parameter. Diese treten auch bei allen folgenden Messungen auf:
+Obwohl die Funktion als Input nur Zeiger auf einen Quell-- und einen Ziel--Buffer erhält, gibt es doch drei implizite Parameter. Diese treten auch bei allen folgenden Messungen auf:
 \begin{enumerate}
-	\item Anzahl der Blöcke, in die die einzelnen Threads von der GPU gruppiert werden
+	\item Die Anzahl der Blöcke, in die die einzelnen Threads von der GPU gruppiert werden
 	\item Die Größe dieser Blöcke
-	\item Zugriffstyp \texttt{T} (zB. \texttt{char}, \texttt{int})
+	\item Den Zugriffstyp \texttt{T} (zB. \texttt{char}, \texttt{int})
 \end{enumerate}
- Abbildung~\ref{fig:CopyKernel1} und Abbildung~\ref{fig:CopyKernelBlocks} zeigen die Auswirkungen von Variationen über die drei Parameter auf die durch den Copy Kernel erzielte Kopierrate. Dabei zeigt sich, dass sowohl für die Anzahl der Blöcke, für die Blockgröße als auch für \texttt{sizeof(T)} ein jeweils höherer Parameter zu einer besseren Kopierrate führt. Für hinreichend hohe Werte wird eine Sättigung nahe des Ergebnisses aus Abbildung~\ref{fig:Kopierrate} erzielt. Interessant ist außerdem, dass die Abbildungen sich mit steigendem \texttt{sizeof(T)} je linearer verhalten, je geringer Blockgröße bzw. Blockanzahl sind.
+Abbildung~\ref{fig:CopyKernel1} und Abbildung~\ref{fig:CopyKernelBlocks} zeigen die Auswirkungen von Variationen über die drei Parameter auf die durch den Copy Kernel erzielte Kopierrate. Dabei zeigt sich, dass sowohl für die Anzahl der Blöcke, für die Blockgröße als auch für \texttt{sizeof(T)} ein jeweils höherer Parameter zu einer höheren Kopierrate führt. Für hinreichend hohe Werte wird eine Sättigung nahe des Ergebnisses aus Abbildung~\ref{fig:Kopierrate} erzielt. Interessant ist außerdem, dass die Abbildungen sich für steigendes \texttt{sizeof(T)} je linearer verhalten, je geringer Blockgröße bzw. Blockanzahl sind.
 
 \begin{figure} [htbp]
  	\centering
  		\includegraphics[width=0.7\textwidth]{Graph_CopyKernel1.png}
- 	\caption{Variation über \texttt{BlockSize} und \texttt{sizeof(T)}, $\texttt{numBlocks} = 16384$}
+ 	\caption{Copy Kernel: Variation über \texttt{BlockSize} und \texttt{sizeof(T)}, $\texttt{numBlocks} = 16384$}
  	\label{fig:CopyKernel1}
 \end{figure}
 
 \begin{figure} [htbp]
  	\centering
  		\includegraphics[width=0.7\textwidth]{Graph_CopyKernelBlocks.png}
- 	\caption{Variation über \texttt{numBlocks} und \texttt{sizeof(T)}, $\texttt{BlockSize} = 1024$}
+ 	\caption{Copy Kernel: Variation über \texttt{numBlocks} und \texttt{sizeof(T)}, $\texttt{BlockSize} = 1024$}
  	\label{fig:CopyKernelBlocks}
 \end{figure}
 
@@ -97,7 +97,7 @@ void copyKernel(T* out, T* in, int stride) {
 }
 \end{lstlisting}
 
-Das heißt, der Zugriff erfolgt nicht mehr auf jedes Element konsekutiv hintereinander, sondern nur auf jedes $N$-te Element. Zusätzlicher Parameter ist dann der \texttt{stride}, der festlegt, wie viele Buffer-Einträge übersprungen werden. Bei elementarem Zugriff, wie er zum Beispiel in einer Turingmaschine definiert ist, sollte sich keine Änderung der Kopierrate ergeben, sofern die nicht bearbeiteten Elemente nicht mitgerechnet werden. Beim der Messung zeigt sich aber, dass deutliche Cashe-Effekte auftreten. Bei Messungen zeigt sich ein nahezu exponentieller Abfall der Kopierrate mit steigendem \texttt{stride}, für den die beiden Messungen Abbildung~\ref{fig:StridedAccess1} und Abbildung~\ref{fig:StridedAccess2} beispielhaft stehen. Bei $\texttt{sizeof(T)} \cdot \texttt{stride} = 32$ und $\texttt{sizeof(T)} \cdot \texttt{stride} = 64$ ergeben sich jeweils zwei fast gleiche Werte, und ab $\texttt{sizeof(T)} \cdot \texttt{stride} = 2048$ fällt die Kopierrate wenn überhaupt nur noch vernachlässigbar ab (bei diesen beiden Messungen wie auch bei allen anderen).
+Das heißt, der Zugriff erfolgt nicht mehr auf jedes Element konsekutiv hintereinander, sondern nur auf jedes $N$-te Element. Zusätzlicher Parameter ist dann der \texttt{stride}, der festlegt, wie viele Buffer-Einträge übersprungen werden. Bei elementarem Zugriff, wie er zum Beispiel in einer Turingmaschine definiert ist, sollte sich keine Änderung der Kopierrate ergeben (sofern die nicht bearbeiteten Elemente nicht mitgerechnet werden). Bei der Messung zeigt sich allerdings, dass deutliche Cashing-Effekte auftreten. Bei Messungen zeigt sich ein nahezu exponentieller Abfall der Kopierrate mit steigendem \texttt{stride}, für den die beiden Messungen Abbildung~\ref{fig:StridedAccess1} und Abbildung~\ref{fig:StridedAccess2} beispielhaft stehen. Bei $\texttt{sizeof(T)} \cdot \texttt{stride} = 32$ und $\texttt{sizeof(T)} \cdot \texttt{stride} = 64$ ergeben sich jeweils zwei fast gleiche Werte, und ab $\texttt{sizeof(T)} \cdot \texttt{stride} = 2048$ fällt die Kopierrate wenn überhaupt nur noch vernachlässigbar ab (bei diesen beiden Messungen wie auch bei allen anderen durchgeführten).
 
 \begin{figure} [htbp]
  	\centering
@@ -140,7 +140,7 @@ void oftKernel (T* out,
 }
 \end{lstlisting}
 
-Abbildung~\ref{fig:OffsetZugriff} zeigt das Zugriffsmuster, das aus diesem Kernel resultiert. Ein "`oftKernel"' greift nicht konsekutiv mit jedem Thread auf ein Element der Buffer zu. Er teilt die Buffer zwar in gleich große Abschnitte auf, die jeweils einem Block zugeordnet werden, unterteilt die Blöcke allerdings erneut in Subdomains. Diese Subdomains bestehen dann aus einem gewissen Anteil Threads, die jeweils eine gewisse Anzahl an Iterationen durchführen müssen, um alle Kopiereinträge abzuarbeiten. Neben den bekannten Parametern \texttt{T} und \texttt{BlockSize} ergeben sich dann noch zusätzlich die Anzahl der Iterationen \texttt{I} und die Anzahl der Threads pro Subdomain \texttt{L}. Die Anzahl der Blöcke ergibt sich dann aus diesen Parametern und der Größe der Subdomains auf den Buffern \texttt{sd\_size}.
+Abbildung~\ref{fig:OffsetZugriff} zeigt das Zugriffsmuster, das aus diesem Kernel resultiert. Ein "`oftKernel"' greift nicht konsekutiv mit jedem Thread auf ein Element der Buffer zu. Er teilt die Buffer zwar in gleich große Abschnitte auf, die jeweils einem Block zugeordnet werden, unterteilt die Blöcke allerdings erneut in Subdomains. Diese Subdomains bestehen dann aus einem gewissen Anteil Threads, die jeweils eine gewisse Anzahl an Iterationen durchführen müssen, um alle nötigen Kopiervorgänge abzuarbeiten. Neben den bekannten Parametern \texttt{T} und \texttt{BlockSize} ergeben sich dann noch zusätzlich die Anzahl der Iterationen pro Thread \texttt{I} und die Anzahl der Threads pro Subdomain \texttt{L}. Die Anzahl der Blöcke ergibt sich dann aus diesen Parametern und der Größe des jeweils einer Subdomain zugeordneten Anteils der Buffer \texttt{sd\_size}.
 
 \begin{figure} [htbp]
  	\centering
@@ -152,37 +152,37 @@ Abbildung~\ref{fig:OffsetZugriff} zeigt das Zugriffsmuster, das aus diesem Kerne
 \begin{figure} [htbp]
  	\centering
  		\includegraphics[width=0.7\textwidth]{Graph_OffsetAccessSDpBlock2.png}
- 	\caption{}
+ 	\caption{Offset Access: Variation über Subdomänen pro Block und \texttt{I}, $\texttt{L} = 4$, $\texttt{sizeof(T)} = 16$}
  	\label{fig:OffsetSD1}
 \end{figure}
 
-Die Abbildungen~\ref{fig:OffsetSD1},~\ref{fig:OffsetSD2} und~\ref{fig:OffsetSD3} zeigen verschiedene Variationen über die Parameter des Kernels. Es zeigt sich, dass die Zusammenhänge im Detail komplex sind, und ohne eine tiefere Analyse der verschiedenen Caches der verwendeten GPU (isb. Gesamt-und Zugriffsgröße) wohl nicht vollständig zu verstehen sind. Dennoch lässt sich festhalten, dass eine Sättigung vergleichbar mit vorherigen Kopieroperationen erreicht werden kann, wenn die Parameter richtig gewählt werden, obwohl der Warp, d.h. die jeweils 32 immer gleich ausgeführten Threads, nicht auf nacheinander liegende Elemente zugreifen muss (siehe isb. Abbildung~\ref{fig:OffsetSD3}). Gleichzeitig zeigt sich ein deutlicher Zusammenhang mit der \texttt{L2}-Cache Line-Size von 128 Byte - ist die Zugriffsgröße einer Iteration gleich 128 Byte oder ein ganzzahliger Teiler davon, ist die Kopierrate wesentlich höher.
+Die Abbildungen~\ref{fig:OffsetSD1},~\ref{fig:OffsetSD2} und~\ref{fig:OffsetSD3} zeigen verschiedene Variationen über die Parameter des Kernels. Es zeigt sich, dass die Zusammenhänge im Detail komplex und ohne eine tiefere Analyse der verschiedenen Caches der verwendeten GPU (isb. Gesamt-und Zugriffsgröße) wohl nicht vollständig zu verstehen sind. Dennoch lässt sich festhalten, dass eine Sättigung vergleichbar mit vorherigen Kopieroperationen erreicht werden kann, wenn die Parameter richtig gewählt werden. Insbesondere können auch Konfigurationen eine Sättigung erreichen, bei denen ein Warp, d.h. die jeweils 32 immer gleich ausgeführten Threads, nicht auf nacheinander liegende Elemente zugreift. Siehe hierfür insbesondere Abbildung~\ref{fig:OffsetSD3}. Außerdem zeigt sich ein deutlicher Zusammenhang mit der \texttt{L2}-Cache Line-Size von 128 Byte -- ist die Zugriffsgröße einer Iteration 128 Byte oder ein ganzzahliger Teiler davon, ist die Kopierrate wesentlich höher.
 
 \begin{figure} [htbp]
  	\centering
  		\includegraphics[width=0.7\textwidth]{Graph_OffsetAccessSDpBlock3.png}
- 	\caption{}
+ 	\caption{Offset Access: Variation über Subdomänen pro Block und \texttt{I}, $\texttt{L} = 8$, $\texttt{sizeof(T)} = 16$}
  	\label{fig:OffsetSD2}
 \end{figure}
 
 \begin{figure} [htbp]
  	\centering
  		\includegraphics[width=0.7\textwidth]{Graph_OffsetAccessSDpBlock4.png}
- 	\caption{}
+ 	\caption{Offset Access: Variation über \texttt{L} und \texttt{I}, 128 Subdomänen pro Block, $\texttt{sizeof(T)} = 16$}
  	\label{fig:OffsetSD3}
 \end{figure}
 
 \section{Allokation: Standard und UnifiedMemory}
-Neben der Standard-Allokation über die C++ Funktion \texttt{malloc()} kann CUDA auch mit \texttt{cudaMallocHost()} einen sogenannten Pinned Memory Buffer auf dem Host-RAM allokieren. Dieser erlaubt schnelleres Kopieren und direkte Zugriffe der Kernel auf den Host-RAM, ohne vorher im Code händisch eine Kopieroperation auf den GPU-Speicher vornehmen zu müssen. Mit einem Copy Kernel wie dem aus Kapitel~\ref{CopyKernel} kann dann wieder eine Kopierraten-Messung vorgenommen werden (Abbildung~\ref{fig:CudaMalloc}). Einen Unterschied bezüglich der Anzahl Blöcke scheint es nicht zu geben, die Kurven liegen perfekt aufeinander. Die Kopierrate scheint linear zu steigen, bis eine Sättigung erreicht wird, die etwas unter dem Niveau des Geschwindigkeit des verwendeten PCIe's liegt. Diese Sättigung wird beim Kopieren vom Device zum Host bereits mit weniger Threads erreicht, und das erreichte Niveau ist ein wenig höher. 
+Neben der Standard--Allokation über die C++ Funktion \texttt{malloc()} kann CUDA auch mit \texttt{cudaMallocHost()} einen sogenannten Pinned Memory Buffer auf dem Host-RAM allokieren. Dieser erlaubt schnelleres Kopieren und direkte Zugriffe der Kernel auf den Host-RAM, ohne vorher im Code händisch eine Kopieroperation auf den GPU-Speicher vornehmen zu müssen. Mit einem Copy Kernel ähnlich dem aus Kapitel~\ref{CopyKernel} kann dann erneut eine Kopierraten-Messung vorgenommen werden (Abbildung~\ref{fig:CudaMalloc}). Einen Unterschied bezüglich der Anzahl Blöcke scheint es nicht zu geben, die Kurven liegen perfekt aufeinander. Die Kopierrate scheint linear zu steigen, bis eine Sättigung erreicht wird, die etwas unter dem Niveau des Geschwindigkeit des verwendeten PCIe's liegt (ähnlich dem Ergebnis aus Abbildung~\ref{fig:Kopierrate}. Diese Sättigung wird beim Kopieren vom Device zum Host bereits mit weniger Threads erreicht, und das erreichte Niveau ist ein wenig höher. 
 
 \begin{figure} [htbp]
  	\centering
  		\includegraphics[width=0.7\textwidth]{Graph_CudaMalloc.png}
- 	\caption{Copy Kernel Kopierrate auf Pinned Memory, \texttt{T}: \texttt{int}}
+ 	\caption{Copy Kernel Kopierrate auf Pinned Memory, $\texttt{sizeof(T)} = 4$}
  	\label{fig:CudaMalloc}
 \end{figure}
 
-Zusätzlich können Buffer in CUDA auch mithilfe von \texttt{CudaMallocManaged()} allokiert werden. Dabei wird vom Programmierer überhaupt keine Angabe getroffen, ob der Buffer auf dem CPU- oder GPU-Ram liegt, sondern CUDA wickelt eventuell benötigte Kopiervorgänge automatisch ab. Abbildung~\ref{fig:CudaMallocManaged} zeigt eine Kopierraten-Messung des Copy-Kernels auf Unified Memory. Dabei wurde durch Cs \texttt{memset()} und CUDAs \texttt{cudaMemset()} sichergestellt, dass die Input- und Output-Buffer jeweils vollständig auf den Host bzw. dem Device RAM kopiert wurden, bevor die Messung begann. Es zeigt sich ein ähnlicher Verlauf wie in der vorherigen Messung, allerdings ist die Form der Kurven viel ungleichmäßiger (möglicherweise ist der Messfehler größer), die Anzahl der Blöcke macht einen deutlicheren Unterschied und die Sättigung wird auch später erreicht.
+Zusätzlich können Buffer in CUDA auch mithilfe von \texttt{cudaMallocManaged()} als sogenannter Unified Memory allokiert werden. Dabei wird vom Programmierer überhaupt keine Angabe getroffen, ob der Buffer auf dem CPU- oder GPU-Ram liegt, sondern CUDA wickelt eventuell benötigte Kopiervorgänge automatisch ab. Abbildung~\ref{fig:CudaMallocManaged} zeigt eine Kopierraten-Messung des Copy-Kernels auf Unified Memory. Dabei wurde durch Cs \texttt{memset()} und CUDAs \texttt{cudaMemset()} sichergestellt, dass die Input- und Output-Buffer vor der Messung jeweils vollständig auf den Host bzw. dem Device RAM kopiert wurden. Es zeigt sich ein ähnlicher Verlauf wie in der vorherigen Messung, allerdings ist die Form der Kurven viel ungleichmäßiger (möglicherweise ist der Messfehler größer), die Anzahl der Blöcke zeigt einen deutlicheren Unterschied und die Sättigung wird wesentlich später erreicht.
 
 \begin{figure} [htbp]
  	\centering
@@ -193,8 +193,8 @@ Zusätzlich können Buffer in CUDA auch mithilfe von \texttt{CudaMallocManaged()
 
 
 \section{Kernel im Producer-Consumer-Verhältnis}
-Für diese Messungen wurden zwei identische Grafikkarten benötigt .Aufgrund der Komplexität des verwendeten Codes sei dessen Gestalt hier nur kurz umrissen: Zwei Kernel, die (in eine Richtung) miteinander kommunizieren müssen, d.h. der eine Kernel benötigt für die Erfüllung seiner Aufgabe die Ergebnisse des anderen aber nicht umgekehrt, stehen in einem Producer-Consumer-Verhältnis. Im vorliegenden Fall errechnet dabei der Producer den Durchschnitt eines Teils des Input-Buffers, während der Consumer diesen berechneten Durchschnitt ausliest und ihn vielfach in den entsprechenden Teil gleicher Größe des Output-Buffers dupliziert. Dabei wartet der Consumer jeweils nur auf einen Teil des Buffers, bevor er diesen dupliziert. Eine Grafikkarte führt dann jeweils einen Kernel aus.
-Eine Zeitmessung für das Producer-Consumer-System bei Ignorieren der Kommunikation findet sich in Abbildung~\ref{fig:KommunikationOhne}: Die benötigte Zeit steigt also nahezu linear mit den Ergebnissen pro Block, was auch zu erwarten ist, da mit diesen auch die Menge der kopierten Daten steigt.
+Für diese Messung werden zwei identische Grafikkarten benötigt. Aufgrund der Komplexität des verwendeten Codes sei dessen Gestalt hier nur kurz umrissen: Zwei Kernel, die (in eine Richtung) miteinander kommunizieren müssen, d.h. der eine Kernel benötigt für die Erfüllung seiner Aufgabe die Ergebnisse des anderen aber nicht umgekehrt, stehen in einem Producer-Consumer-Verhältnis. Im vorliegenden Fall errechnet dabei der Producer den Durchschnitt eines Teils des Input-Buffers, während der Consumer diesen berechneten Durchschnitt ausliest und ihn vielfach in den entsprechenden Teil gleicher Größe des Output-Buffers dupliziert. Dabei wartet der Consumer jeweils nur auf einen Teil des Buffers, bevor er diesen dupliziert. Eine Grafikkarte führt dann jeweils einen Kernel aus.
+Eine Zeitmessung für das Producer-Consumer-System bei Ignorieren der Kommunikation findet sich in Abbildung~\ref{fig:KommunikationOhne}: Die benötigte Zeit steigt nahezu linear mit den Ergebnissen pro Block, was auch zu erwarten ist, da mit diesem Parameter auch proportional die Menge der bearbeiteten Daten steigt.
 
 \begin{figure} [htbp]
  	\centering
@@ -203,7 +203,7 @@ Eine Zeitmessung für das Producer-Consumer-System bei Ignorieren der Kommunikat
  	\label{fig:KommunikationOhne}
 \end{figure}
 
-Die Graphen mit aktivierter Kommunikation verlaufen ähnlich, allerdings auf einem wesentlich höheren Niveau. Auch die Berechnung des Anteils der Kommunikation am Gesamtergebnis führt demzufolge zu einem mehr oder weniger konstanten Verlauf der Kurven (Abbildung~\ref{fig:KommunikationAnteil}). Lediglich bei einer sehr geringen Anzahl von Ergebnissen pro Block zeigt sich eine gewisse Abweichung. Mit einem Anteil über 80\%, teilweise sogar über 90\% liegt der Kommunikationsanteil jedenfalls sehr hoch, und er scheint mit steigender Anzahl von Blöcken auch leicht zu steigen. Umgekehrt handelt es sich bei dem Ausschlag der Kurve für 8~Blöcke und 1024~Threads beim letzten Wert vermutlich um einen Messfehler.
+Die Graphen mit aktivierter Kommunikation verlaufen ähnlich, allerdings auf einem wesentlich höheren Niveau. Demzufolge führt auch die Berechnung des Anteils der Kommunikation am Gesamtergebnis zu einem mehr oder weniger konstanten Verlauf der Kurven (Abbildung~\ref{fig:KommunikationAnteil}). Lediglich bei einer sehr geringen Anzahl von Ergebnissen pro Block zeigt sich eine gewisse Abweichung. Mit über 80\%, teilweise sogar über 90\% liegt der Kommunikationsanteil jedenfalls sehr hoch, und er scheint mit steigender Anzahl von Blöcken auch leicht zu steigen. Umgekehrt handelt es sich bei dem Ausschlag der Kurve für 8~Blöcke und 1024~Threads beim letzten Wert vermutlich um einen Messfehler.
 \begin{figure} [htbp]
  	\centering
  		\includegraphics[width=0.7\textwidth]{Graph_KommunikationAnteil.png}

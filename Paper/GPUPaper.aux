@@ -29,35 +29,35 @@
 \@writefile{lof}{\select@language{ngerman}}
 \@writefile{lot}{\select@language{ngerman}}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Einf\IeC {\"u}hrung und Allgemeines}{1}{section.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Grunds\IeC {\"a}tzliche Beobachtungen zur Kopierrate}{1}{subsection.1.1}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Grunds\IeC {\"a}tzliche Beobachtungen}{1}{section.2}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Kopierrate von \texttt  {cudaMemcpy()}}}{1}{figure.1}}
 \newlabel{fig:Kopierrate}{{1}{1}{Kopierrate von \texttt {cudaMemcpy()}}{figure.1}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Startup Cost eines Empty Kerneles}}{2}{figure.2}}
 \newlabel{fig:StartupCost}{{2}{2}{Startup Cost eines Empty Kerneles}{figure.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Copy Kernel}{2}{section.2}}
-\newlabel{CopyKernel}{{2}{2}{Copy Kernel}{section.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Variation \IeC {\"u}ber \texttt  {BlockSize} und \texttt  {sizeof(T)}, $\texttt  {numBlocks} = 16384$}}{3}{figure.3}}
-\newlabel{fig:CopyKernel1}{{3}{3}{Variation über \texttt {BlockSize} und \texttt {sizeof(T)}, $\texttt {numBlocks} = 16384$}{figure.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Variation \IeC {\"u}ber \texttt  {numBlocks} und \texttt  {sizeof(T)}, $\texttt  {BlockSize} = 1024$}}{3}{figure.4}}
-\newlabel{fig:CopyKernelBlocks}{{4}{3}{Variation über \texttt {numBlocks} und \texttt {sizeof(T)}, $\texttt {BlockSize} = 1024$}{figure.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Strided Access}{3}{section.3}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Copy Kernel}{2}{section.3}}
+\newlabel{CopyKernel}{{3}{2}{Copy Kernel}{section.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Copy Kernel: Variation \IeC {\"u}ber \texttt  {BlockSize} und \texttt  {sizeof(T)}, $\texttt  {numBlocks} = 16384$}}{3}{figure.3}}
+\newlabel{fig:CopyKernel1}{{3}{3}{Copy Kernel: Variation über \texttt {BlockSize} und \texttt {sizeof(T)}, $\texttt {numBlocks} = 16384$}{figure.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Copy Kernel: Variation \IeC {\"u}ber \texttt  {numBlocks} und \texttt  {sizeof(T)}, $\texttt  {BlockSize} = 1024$}}{3}{figure.4}}
+\newlabel{fig:CopyKernelBlocks}{{4}{3}{Copy Kernel: Variation über \texttt {numBlocks} und \texttt {sizeof(T)}, $\texttt {BlockSize} = 1024$}{figure.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Strided Access}{3}{section.4}}
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Strided Access: Variation \IeC {\"u}ber \texttt  {stride}, $\texttt  {BlockSize} = 256$, $\texttt  {numBlocks} = 4096$, \texttt  {T}:~\texttt  {int2}~($\texttt  {sizeof(int2)} = 8$)}}{4}{figure.5}}
 \newlabel{fig:StridedAccess1}{{5}{4}{Strided Access: Variation über \texttt {stride}, $\texttt {BlockSize} = 256$, $\texttt {numBlocks} = 4096$, \texttt {T}:~\texttt {int2}~($\texttt {sizeof(int2)} = 8$)}{figure.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Offset Access}{4}{section.4}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Offset Access}{4}{section.5}}
 \@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Strided Access: Variation \IeC {\"u}ber \texttt  {stride}, $\texttt  {BlockSize} = 128$, $\texttt  {numBlocks} = 2048$, \texttt  {T}:~\texttt  {int4}~($\texttt  {sizeof(int4)} = 16$)}}{5}{figure.6}}
 \newlabel{fig:StridedAccess2}{{6}{5}{Strided Access: Variation über \texttt {stride}, $\texttt {BlockSize} = 128$, $\texttt {numBlocks} = 2048$, \texttt {T}:~\texttt {int4}~($\texttt {sizeof(int4)} = 16$)}{figure.6}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Zugriffsmuster des Offset Access}}{6}{figure.7}}
 \newlabel{fig:OffsetZugriff}{{7}{6}{Zugriffsmuster des Offset Access}{figure.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces }}{6}{figure.8}}
-\newlabel{fig:OffsetSD1}{{8}{6}{}{figure.8}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces }}{7}{figure.9}}
-\newlabel{fig:OffsetSD2}{{9}{7}{}{figure.9}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces }}{7}{figure.10}}
-\newlabel{fig:OffsetSD3}{{10}{7}{}{figure.10}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Allokation: Standard und UnifiedMemory}{7}{section.5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Copy Kernel Kopierrate auf Pinned Memory, \texttt  {T}: \texttt  {int}}}{8}{figure.11}}
-\newlabel{fig:CudaMalloc}{{11}{8}{Copy Kernel Kopierrate auf Pinned Memory, \texttt {T}: \texttt {int}}{figure.11}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Kernel im Producer-Consumer-Verh\IeC {\"a}ltnis}{8}{section.6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Offset Access: Variation \IeC {\"u}ber Subdom\IeC {\"a}nen pro Block und \texttt  {I}, $\texttt  {L} = 4$, $\texttt  {sizeof(T)} = 16$}}{6}{figure.8}}
+\newlabel{fig:OffsetSD1}{{8}{6}{Offset Access: Variation über Subdomänen pro Block und \texttt {I}, $\texttt {L} = 4$, $\texttt {sizeof(T)} = 16$}{figure.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Offset Access: Variation \IeC {\"u}ber Subdom\IeC {\"a}nen pro Block und \texttt  {I}, $\texttt  {L} = 8$, $\texttt  {sizeof(T)} = 16$}}{7}{figure.9}}
+\newlabel{fig:OffsetSD2}{{9}{7}{Offset Access: Variation über Subdomänen pro Block und \texttt {I}, $\texttt {L} = 8$, $\texttt {sizeof(T)} = 16$}{figure.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Offset Access: Variation \IeC {\"u}ber \texttt  {L} und \texttt  {I}, 128 Subdom\IeC {\"a}nen pro Block, $\texttt  {sizeof(T)} = 16$}}{7}{figure.10}}
+\newlabel{fig:OffsetSD3}{{10}{7}{Offset Access: Variation über \texttt {L} und \texttt {I}, 128 Subdomänen pro Block, $\texttt {sizeof(T)} = 16$}{figure.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Allokation: Standard und UnifiedMemory}{7}{section.6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Copy Kernel Kopierrate auf Pinned Memory, $\texttt  {sizeof(T)} = 4$}}{8}{figure.11}}
+\newlabel{fig:CudaMalloc}{{11}{8}{Copy Kernel Kopierrate auf Pinned Memory, $\texttt {sizeof(T)} = 4$}{figure.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Kernel im Producer-Consumer-Verh\IeC {\"a}ltnis}{8}{section.7}}
 \@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Copy Kernel Kopierrate auf Unified Memory, \texttt  {T}: \texttt  {int}}}{9}{figure.12}}
 \newlabel{fig:CudaMallocManaged}{{12}{9}{Copy Kernel Kopierrate auf Unified Memory, \texttt {T}: \texttt {int}}{figure.12}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Laufzeit Producer-Consumer-Verh\IeC {\"a}ltnis ohne Kommunikation}}{9}{figure.13}}
